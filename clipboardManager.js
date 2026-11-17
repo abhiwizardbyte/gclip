@@ -33,15 +33,15 @@ export class ClipboardManager {
     }
 
     _startMonitoring() {
-        // Usar el sistema de eventos de Meta.Display en lugar de polling
+        // Use Meta.Display event system instead of polling
         const metaDisplay = Shell.Global.get().get_display();
         const selection = metaDisplay.get_selection();
         
         this._selectionOwnerChangedId = selection.connect('owner-changed', 
             (selection, selectionType, selectionSource) => {
-                // Solo procesar eventos del CLIPBOARD (no PRIMARY)
+                // Only process CLIPBOARD events (not PRIMARY selection)
                 if (selectionType === Meta.SelectionType.SELECTION_CLIPBOARD) {
-                    // En modo privado no se lee ni se guarda nada
+                    // In private mode, nothing is read or saved
                     if (this._settings.get_boolean('private-mode'))
                         return;
 
@@ -55,7 +55,7 @@ export class ClipboardManager {
     }
 
     _checkClipboard() {
-        // Intentar obtener contenido del clipboard con múltiples mimetypes
+        // Attempt to retrieve clipboard content across multiple mimetypes
         const mimetypes = [
             "text/plain;charset=utf-8",
             "text/plain",
@@ -71,7 +71,7 @@ export class ClipboardManager {
                     const data = bytes.get_data();
                     
                     if (mimetype.startsWith('text/')) {
-                        // Es texto
+                        // Plain text content
                         const text = new TextDecoder().decode(data);
                         if (text && text.trim() && text !== this._lastText) {
                             this._lastText = text;
@@ -82,7 +82,7 @@ export class ClipboardManager {
                             });
                         }
                     } else if (mimetype.startsWith('image/')) {
-                        // Es imagen
+                        // Image content
                         const hash = this._hashBytes(data);
                         if (hash !== this._lastImageHash) {
                             this._lastImageHash = hash;
@@ -95,7 +95,7 @@ export class ClipboardManager {
     }
 
     _hashBytes(bytes) {
-        // Simple hash para detectar imágenes duplicadas
+        // Simple hash to detect duplicate images
         let hash = 0;
         for (let i = 0; i < Math.min(bytes.length, 1000); i++) {
             hash = ((hash << 5) - hash) + bytes[i];
@@ -125,17 +125,17 @@ export class ClipboardManager {
     }
 
     _addToHistory(item) {
-        // Solo buscar duplicados entre items no marcados (los marcadores son permanentes)
+        // Only deduplicate non-bookmarked items (bookmarks are kept permanently)
         const existingIndex = this._history.findIndex(h => !h.favorite && h.contents === item.contents);
 
         if (existingIndex !== -1) {
             this._history.splice(existingIndex, 1);
         }
 
-        // Agregar al inicio
+        // Add to beginning of history list
         this._history.unshift(item);
 
-        // El límite solo aplica a items no marcados
+        // Limit applies only to non-bookmarked items
         while (this._history.filter(i => !i.favorite).length > this._maxItems) {
             const idx = [...this._history].reverse().findIndex(i => !i.favorite);
             const realIdx = this._history.length - 1 - idx;
@@ -200,7 +200,7 @@ export class ClipboardManager {
                 });
                 
                 this._history = JSON.parse(new TextDecoder().decode(contents));
-                // Limpiar referencias a imágenes que ya no existen
+                // Clean up references to deleted images
                 this._history = this._history.filter(item => {
                     if (item.mimetype && item.mimetype.startsWith('image/')) {
                         let imgFile = Gio.File.new_for_path(item.contents);
@@ -247,7 +247,7 @@ export class ClipboardManager {
     }
 
     clearHistory() {
-        // Eliminar todas las imágenes
+        // Delete all image files from disk
         this._history.forEach(item => {
             if (item.mimetype && item.mimetype.startsWith('image/')) {
                 this._deleteImageFile(item.contents);

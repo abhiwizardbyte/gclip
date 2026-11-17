@@ -4,7 +4,7 @@ import Gtk from 'gi://Gtk';
 import Adw from 'gi://Adw';
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-// Valores de la clave popup-theme, en el orden en que se muestran
+// Values for popup-theme key in display order
 const POPUP_THEMES = [
     ['system', 'Follow System'],
     ['light', 'Light'],
@@ -16,11 +16,11 @@ export default class GClipPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
         const settings = this.getSettings();
 
-        // Página principal
+        // Main preferences page
         const page = new Adw.PreferencesPage();
         window.add(page);
 
-        // Grupo de configuración general
+        // General settings group
         const generalGroup = new Adw.PreferencesGroup({
             title: 'General Settings',
             description: 'Configure clipboard history behavior'
@@ -99,7 +99,7 @@ export default class GClipPreferences extends ExtensionPreferences {
         });
 
         clearButton.connect('clicked', () => {
-            // Mostrar diálogo de confirmación
+            // Show confirmation dialog
             const dialog = new Gtk.MessageDialog({
                 transient_for: window,
                 modal: true,
@@ -111,7 +111,7 @@ export default class GClipPreferences extends ExtensionPreferences {
 
             dialog.connect('response', (dialog, response) => {
                 if (response === Gtk.ResponseType.YES) {
-                    // TODO: Implementar limpieza
+                    // TODO: Implement clipboard clearing
                    console.debug('Clearing clipboard history...');
                 }
                 dialog.destroy();

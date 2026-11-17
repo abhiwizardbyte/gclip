@@ -32,17 +32,17 @@ class ClipboardPopup extends St.Widget {
 
         this._buildUI();
 
-        // Mantener el interruptor sincronizado si el modo cambia desde fuera
+        // Keep toggle switch synchronized if private mode changes externally
         this._settings.connectObject('changed::private-mode',
             () => this._updatePrivateSwitch(), this);
-        // También llena la lista (u oculta los items si el modo está activo)
+        // Populate list (or show placeholder if private mode is active)
         this._updatePrivateSwitch();
         
-        // Añadir al layout manager
+        // Add to layout manager
         Main.layoutManager.addTopChrome(this);
         this._positionPopup();
         
-        // Capturar eventos globales
+        // Capture global stage events
         this._capturedEventId = global.stage.connect('captured-event', 
             this._onCapturedEvent.bind(this));
 
@@ -59,11 +59,11 @@ class ClipboardPopup extends St.Widget {
     }
 
     _positionPopup() {
-        // Obtener posición del cursor
+        // Get current cursor position
         let [x, y] = global.get_pointer();
         let monitor = Main.layoutManager.currentMonitor;
         
-        // Ajustar para que no se salga de la pantalla
+        // Clamp coordinates to keep popup within monitor bounds
         x = Math.min(x, monitor.x + monitor.width - POPUP_WIDTH - 20);
         y = Math.min(y, monitor.y + monitor.height - POPUP_HEIGHT - 20);
         x = Math.max(x, monitor.x + 20);
@@ -74,15 +74,15 @@ class ClipboardPopup extends St.Widget {
     }
 
     _buildUI() {
-        // Contenedor principal: reutiliza el fondo, borde y sombra de los menús del Shell
+        // Main container: reuses shell popup menu background, border, and shadows
         let mainBox = new St.BoxLayout({
             vertical: true,
             style_class: 'popup-menu-content gclip-popup',
             width: POPUP_WIDTH,
             height: POPUP_HEIGHT
         });
-        // 'system' deja los colores del tema del Shell; el resto fuerza una paleta propia.
-        // getStyleVariant() no existe en versiones antiguas, donde el Shell siempre es oscuro
+        // 'system' uses the shell theme colors; other choices use custom palettes
+        // getStyleVariant() does not exist in older versions where the shell is always dark
         const theme = this._settings.get_string('popup-theme');
         const light = theme === 'light' ||
             (theme === 'system' && Main.getStyleVariant?.() === 'light');
@@ -91,11 +91,11 @@ class ClipboardPopup extends St.Widget {
             mainBox.add_style_class_name(light ? 'gclip-theme-light' : 'gclip-theme-dark');
         if (theme === 'darker')
             mainBox.add_style_class_name('gclip-theme-darker');
-        // Texto secundario y teclas para fondos claros
+        // Secondary text and keycaps for light backgrounds
         if (light)
             mainBox.add_style_class_name('gclip-light');
 
-        // Barra de búsqueda
+        // Search entry
         this._searchEntry = new St.Entry({
             style_class: 'gclip-search-entry',
             hint_text: 'Search clipboard…',
@@ -128,7 +128,7 @@ class ClipboardPopup extends St.Widget {
         searchRow.add_child(this._searchEntry);
         mainBox.add_child(searchRow);
 
-        // Selector de vista (Recent / Bookmarks)
+        // View selector tabs (Recent / Bookmarks)
         let tabBar = new St.BoxLayout({
             style_class: 'gclip-tab-bar',
             vertical: false,
@@ -158,7 +158,7 @@ class ClipboardPopup extends St.Widget {
         tabBar.add_child(this._tabBookmarks);
         mainBox.add_child(tabBar);
 
-        // ScrollView para la lista
+        // ScrollView for items list
         this._scrollView = new St.ScrollView({
             style_class: 'gclip-scroll-view',
             hscrollbar_policy: St.PolicyType.NEVER,
@@ -174,7 +174,7 @@ class ClipboardPopup extends St.Widget {
         this._scrollView.add_child(this._listBox);
         mainBox.add_child(this._scrollView);
 
-        // Footer: atajos principales y, al final, modo privado y ajustes
+        // Footer: shortcut hints, private mode toggle, and settings button
         let footer = new St.BoxLayout({
             style_class: 'gclip-footer',
             vertical: false,
@@ -191,7 +191,7 @@ class ClipboardPopup extends St.Widget {
         this._addShortcutHint(hints, 'Del', 'Delete');
         footer.add_child(hints);
 
-        // Interruptor de modo privado; el clic lo gestiona el botón que lo envuelve
+        // Private mode switch; clicks are handled by the wrapping button
         this._privateSwitch = new PopupMenu.Switch(false);
         this._privateSwitch.reactive = false;
 
@@ -261,13 +261,13 @@ class ClipboardPopup extends St.Widget {
     _updatePrivateSwitch() {
         const active = this._settings.get_boolean('private-mode');
 
-        // setToggleState() en versiones antiguas; propiedad state en las recientes
+        // setToggleState() in older versions; state property in recent versions
         if (this._privateSwitch.setToggleState)
             this._privateSwitch.setToggleState(active);
         else
             this._privateSwitch.state = active;
 
-        // Los items se ocultan mientras el modo privado está activo
+        // Items are hidden while private mode is active
         this._selectedIndex = 0;
         this._filterList();
     }
@@ -309,12 +309,12 @@ class ClipboardPopup extends St.Widget {
         }
         
         if (event.type() === Clutter.EventType.MOTION) {
-            // Desactivar modo teclado cuando se mueve el mouse
+            // Disable keyboard mode on mouse motion
             this._keyboardMode = false;
         }
         
         if (event.type() === Clutter.EventType.BUTTON_PRESS) {
-            // Cerrar si click fuera del popup
+            // Close popup when clicking outside bounds
             let [x, y] = event.get_coords();
             let [popupX, popupY] = this.get_position();
             let [popupW, popupH] = this.get_size();
@@ -371,7 +371,7 @@ class ClipboardPopup extends St.Widget {
     }
 
     _createItemWidget(item, index, displayIndex = index) {
-        // track_hover desactivado: el resaltado lo lleva la selección, no el hover
+        // track_hover disabled: highlighting is controlled by selection, not hover
         let itemBox = new St.BoxLayout({
             style_class: 'popup-menu-item gclip-item',
             vertical: false,
@@ -379,7 +379,7 @@ class ClipboardPopup extends St.Widget {
             x_expand: true
         });
 
-        // Índice del item
+        // Item index label
         let indexLabel = new St.Label({
             text: `${displayIndex + 1}`,
             style_class: 'gclip-item-index gclip-dim',
@@ -388,7 +388,7 @@ class ClipboardPopup extends St.Widget {
         itemBox.add_child(indexLabel);
 
         if (item.mimetype === 'text/plain;charset=utf-8') {
-            // Preview en una línea; el label recorta con elipsis lo que no quepa
+            // Single-line preview; label truncates with ellipsis if too long
             let preview = item.contents
                 .substring(0, MAX_PREVIEW_LENGTH)
                 .replace(/\s+/g, ' ')
@@ -402,12 +402,12 @@ class ClipboardPopup extends St.Widget {
             itemBox.add_child(label);
 
         } else if (item.mimetype && item.mimetype.startsWith('image/')) {
-            // Previsualización de la imagen
+            // Image thumbnail preview
             let thumbnail = this._createImageThumbnail(item.contents);
             if (thumbnail) {
                 itemBox.add_child(thumbnail);
             } else {
-                // Fallback: icono si falla la carga
+                // Fallback: generic image icon if loading fails
                 let icon = new St.Icon({
                     icon_name: 'image-x-generic-symbolic',
                     style_class: 'gclip-dim',
@@ -416,7 +416,7 @@ class ClipboardPopup extends St.Widget {
                 itemBox.add_child(icon);
             }
 
-            // Info de la imagen
+            // Image info label
             let label = new St.Label({
                 text: 'Image',
                 style_class: 'gclip-dim',
@@ -426,7 +426,7 @@ class ClipboardPopup extends St.Widget {
             itemBox.add_child(label);
         }
 
-        // Acciones del item; solo se muestran mientras el puntero está sobre la fila
+        // Item action buttons; only shown when hovering the row
         let actions = new St.BoxLayout({
             style_class: 'gclip-item-actions',
             vertical: false,
@@ -456,7 +456,7 @@ class ClipboardPopup extends St.Widget {
         });
 
         itemBox.connect('enter-event', () => {
-            // Desactivar modo teclado cuando el mouse se mueve
+            // Disable keyboard mode on mouse motion
             this._keyboardMode = false;
             this._selectedIndex = this._items.indexOf(itemBox);
             this._updateSelection();
@@ -464,14 +464,14 @@ class ClipboardPopup extends St.Widget {
         });
 
         itemBox.connect('leave-event', (actor, event) => {
-            // Pasar a un hijo (los iconos de acción) no cuenta como salir de la fila
+            // Moving to child actor (action buttons) does not count as leaving row
             const related = event.get_related();
             if (!related || !itemBox.contains(related))
                 actions.opacity = 0;
         });
         
         itemBox.connect('motion-event', () => {
-            // También desactivar con movimiento del mouse
+            // Also disable keyboard mode on mouse motion
             this._keyboardMode = false;
             return Clutter.EVENT_PROPAGATE;
         });
@@ -492,7 +492,7 @@ class ClipboardPopup extends St.Widget {
         });
 
         action.connect('button-press-event', () => {
-            // Oculta: el clic cuenta como clic en la fila
+            // Hidden: click counts as clicking the parent row
             if (itemBox._actions.opacity === 0)
                 return Clutter.EVENT_PROPAGATE;
 
@@ -510,7 +510,7 @@ class ClipboardPopup extends St.Widget {
                 return null;
             }
 
-            // St.Icon carga y escala la imagen (Clutter.Image ya no existe en versiones recientes)
+            // St.Icon loads and scales the image (Clutter.Image is removed in recent versions)
             return new St.Icon({
                 gicon: Gio.FileIcon.new(file),
                 icon_size: THUMBNAIL_SIZE,
@@ -575,7 +575,7 @@ class ClipboardPopup extends St.Widget {
             if (index === this._selectedIndex) {
                 item.add_style_pseudo_class('selected');
 
-                // Hacer scroll automático para mantener el item visible
+                // Automatically scroll to keep the selected item visible
                 this._scrollToItem(item);
             } else {
                 item.remove_style_pseudo_class('selected');
@@ -586,7 +586,7 @@ class ClipboardPopup extends St.Widget {
     _scrollToItem(item) {
         if (!this._scrollView || !this._keyboardMode) return;
         
-        // get_vscroll_bar() ya no existe en versiones recientes; se mantiene como fallback para las antiguas
+        // get_vscroll_bar() is deprecated in recent versions; kept as fallback for older releases
         const adjustment = this._scrollView.vadjustment ??
             this._scrollView.get_vscroll_bar().get_adjustment();
         const pageSize = adjustment.page_size;
@@ -596,13 +596,13 @@ class ClipboardPopup extends St.Widget {
         const itemY = box.y1;
         const itemHeight = box.y2 - itemY;
 
-        const margin = 10; // Margen para mejor visibilidad
+        const margin = 10; // Margin for optimal visibility
 
         if (itemY < value + margin) {
-            // Item está arriba, scroll hacia arriba
+            // Item is above viewport, scroll up
             adjustment.value = Math.max(0, itemY - margin);
         } else if (itemY + itemHeight > value + pageSize - margin) {
-            // Item está abajo, scroll hacia abajo
+            // Item is below viewport, scroll down
             adjustment.value = Math.min(
                 adjustment.upper - pageSize,
                 itemY + itemHeight - pageSize + margin

@@ -14,7 +14,7 @@ export default class GClipExtension extends Extension {
         this._settings = this.getSettings();
         this._clipboardManager = new ClipboardManager(this._settings);
         
-        // Registrar keybinding (Super+V por defecto)
+        // Register keybinding (Super+Shift+V by default)
         Main.wm.addKeybinding(
             'show-clipboard-popup',
             this._settings,
@@ -23,7 +23,7 @@ export default class GClipExtension extends Extension {
             () => this._showPopup()
         );
 
-        // Atajo global para el modo privado (sin asignar por defecto)
+        // Global shortcut for private mode (unassigned by default)
         Main.wm.addKeybinding(
             'toggle-private-mode',
             this._settings,
@@ -74,7 +74,7 @@ export default class GClipExtension extends Extension {
         const icon = Gio.ThemedIcon.new(PRIVATE_ICON);
         const label = active ? 'Private mode on' : 'Private mode off';
         const osd = Main.osdWindowManager;
-        // showAll() existe en versiones recientes; show(monitor, ...) en las antiguas
+        // showAll() exists in recent versions; show(monitor, ...) in older versions
         if (osd.showAll)
             osd.showAll(icon, label);
         else

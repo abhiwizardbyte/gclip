@@ -1,9 +1,8 @@
 /* GClip Extension Stylesheet */
 
-/* Fondo, borde, sombra, filas, entrada y botones vienen del tema del Shell
-   (popup-menu-content, popup-menu-item, button, icon-button, toggle-switch), así que siguen
-   el estilo claro/oscuro. Aquí va el layout, en versión compacta, y al final
-   las paletas de los temas forzados (Light, Dark, Darker). */
+/* Background, border, shadow, rows, entry, and buttons inherit from the Shell theme
+   (popup-menu-content, popup-menu-item, button, icon-button, toggle-switch).
+   Layout styling is compact, with theme overrides (Light, Dark, Darker) below. */
 
 .gclip-popup {
     padding: 10px;
@@ -113,7 +112,7 @@
     spacing: 6px;
 }
 
-/* Interruptor nativo en tamaño reducido */
+/* Reduced size toggle switch */
 .gclip-popup .toggle-switch {
     width: 32px;
 }
@@ -153,12 +152,12 @@
     background-color: rgba(255, 255, 255, 0.08);
 }
 
-/* Texto e iconos secundarios */
+/* Secondary text and icons */
 .gclip-dim {
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* Fondos claros (estilo claro del Shell o tema Light) */
+/* Light backgrounds (Light shell style or Light theme) */
 .gclip-light .gclip-keycap {
     border-color: rgba(0, 0, 0, 0.15);
     background-color: rgba(0, 0, 0, 0.05);
@@ -172,7 +171,7 @@
     color: rgba(0, 0, 0, 0.6);
 }
 
-/* Tema Dark */
+/* Dark Theme */
 .gclip-popup.gclip-theme-dark {
     background-color: #36363a;
     border: 1px solid #424247;
@@ -222,7 +221,7 @@
     color: #ffffff;
 }
 
-/* !important: algunos temas (Yaru) fijan así el fondo de la fila seleccionada */
+/* !important: some themes (like Yaru) require this to override selected row background */
 .gclip-theme-dark .gclip-item:selected {
     background-color: rgba(255, 255, 255, 0.1) !important;
     color: #ffffff;
@@ -232,7 +231,7 @@
     background-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Acento del sistema (GNOME 47+), con el naranja de GNOME como fallback */
+/* System accent color (GNOME 47+), falling back to GNOME orange */
 .gclip-theme-dark .toggle-switch:checked {
     background-color: #ed5b00;
     background-color: -st-accent-color;
@@ -247,7 +246,7 @@
     background-color: rgba(255, 255, 255, 0.45);
 }
 
-/* Tema Light */
+/* Light Theme */
 .gclip-popup.gclip-theme-light {
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
@@ -297,7 +296,7 @@
     color: #222222;
 }
 
-/* !important: algunos temas (Yaru) fijan así el fondo de la fila seleccionada */
+/* !important: some themes (like Yaru) require this to override selected row background */
 .gclip-theme-light .gclip-item:selected {
     background-color: rgba(0, 0, 0, 0.08) !important;
     color: #222222;
@@ -307,7 +306,7 @@
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-/* Acento del sistema (GNOME 47+), con el naranja de GNOME como fallback */
+/* System accent color (GNOME 47+), falling back to GNOME orange */
 .gclip-theme-light .toggle-switch:checked {
     background-color: #ed5b00;
     background-color: -st-accent-color;
@@ -322,7 +321,7 @@
     background-color: rgba(0, 0, 0, 0.45);
 }
 
-/* Tema Darker: el tema Dark con los fondos originales de GClip */
+/* Darker Theme: Dark theme with original deep contrast backgrounds */
 .gclip-popup.gclip-theme-darker {
     background-color: rgba(25, 25, 25, 0.98);
     border: 1px solid rgba(255, 255, 255, 0.15);

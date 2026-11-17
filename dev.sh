@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Script de desarrollo para GClip
-# Sincroniza cambios y recarga la extensión automáticamente
+# Development helper script for GClip Enhanced
+# Syncs changes and reloads extension automatically
 
 EXT_DIR="$HOME/.local/share/gnome-shell/extensions/gclip-enhanced@abhiwizardbyte.dev"
 DEV_DIR="$(pwd)"
 
 echo "🔄 Syncing files to extension directory..."
 
-# Copiar archivos modificados
+# Copy modified files
 rsync -av --exclude='.git' \
     --exclude='node_modules' \
     --exclude='dev.sh' \
@@ -28,5 +28,5 @@ echo "✅ Extension reloaded! Press Super+V to test"
 echo "📋 Watching logs (Ctrl+C to stop):"
 echo ""
 
-# Mostrar logs en tiempo real
+# Show real-time logs
 journalctl -f -o cat /usr/bin/gnome-shell | grep -i "gclip\|js error"
