@@ -13,7 +13,7 @@ const POPUP_HEIGHT = 390;
 
 export const ClipboardPopup = GObject.registerClass(
 class ClipboardPopup extends St.Widget {
-    _init(history, clipboardManager, settings, openPreferences) {
+    _init(history, clipboardManager, settings, openPreferences, onDestroy) {
         super._init({
             reactive: true,
             can_focus: true,
@@ -24,6 +24,7 @@ class ClipboardPopup extends St.Widget {
         this._clipboardManager = clipboardManager;
         this._settings = settings;
         this._openPreferences = openPreferences;
+        this._onDestroyCallback = onDestroy;
         this._targetWindow = global.display.focus_window;
         this._selectedIndex = 0;
         this._keyboardMode = false;
@@ -49,6 +50,10 @@ class ClipboardPopup extends St.Widget {
             if (this._capturedEventId) {
                 global.stage.disconnect(this._capturedEventId);
                 this._capturedEventId = null;
+            }
+            if (this._onDestroyCallback) {
+                this._onDestroyCallback();
+                this._onDestroyCallback = null;
             }
         });
     }

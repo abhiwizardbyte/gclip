@@ -61,10 +61,9 @@ export default class GClipExtension extends Extension {
         
         const history = this._clipboardManager.getHistory();
         this._popup = new ClipboardPopup(history, this._clipboardManager,
-            this._settings, () => this.openPreferences());
-        this._popup.connect('destroy', () => {
-            this._popup = null;
-        });
+            this._settings, () => this.openPreferences(), () => {
+                this._popup = null;
+            });
         this._popup.open();
     }
 
