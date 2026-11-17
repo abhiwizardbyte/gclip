@@ -1,7 +1,7 @@
 {
-  "name": "GClip",
-  "description": "Clipboard manager with popup interface for GNOME Shell (Wayland compatible)",
-  "uuid": "gclip@Geomoon.dev",
+  "name": "GClip Enhanced",
+  "description": "Lightweight clipboard manager with instant auto-paste (Windows Win+V style) and keyboard navigation for GNOME Shell (Wayland compatible)",
+  "uuid": "gclip-enhanced@abhiwizardbyte.dev",
   "shell-version": [
     "45",
     "46",
@@ -10,10 +10,7 @@
     "49",
     "50"
   ],
-  "url": "https://github.com/Geomoon/gclip",
-  "version": 5,
-  "settings-schema": "org.gnome.shell.extensions.gclip",
-  "donations": {
-    "kofi": "geovlunaa"
-  }
+  "url": "https://github.com/abhiwizardbyte/gclip",
+  "version": 1,
+  "settings-schema": "org.gnome.shell.extensions.gclip-enhanced"
 }

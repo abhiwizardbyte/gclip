@@ -1,40 +1,35 @@
-# GClip - GNOME Clipboard Manager
+# GClip Enhanced - GNOME Clipboard Manager
 
-A lightweight clipboard manager extension for GNOME Shell with a Windows-style popup interface. Fully compatible with Wayland.
+A lightweight clipboard manager extension for GNOME Shell with a Windows-style popup interface, **instant auto-paste on Enter**, and full keyboard navigation. Fully compatible with Wayland and GNOME Shell 45–50.
+
+> **Credits:** Forked and enhanced from [GClip by Geomoon](https://github.com/Geomoon/gclip). Enhanced and maintained by [abhiwizardbyte](https://github.com/abhiwizardbyte/gclip) with instant auto-paste (Windows `Win+V` style), arrow navigation highlights for default system themes, Wayland focus management, and GNOME 46+ compatibility.
 
 ## Features
 
-<img width="857" height="458" alt="image" src="https://github.com/user-attachments/assets/7746f766-49a4-4e86-922f-ad4b09694f1c" />
-
-
 - 📋 **Text & Image Support**: Manages both text and image clipboard history
-- ⚡ **Quick Access**: Open with `Super+Shift+V` (configurable)
+- ⚡ **Quick Access & Auto-Paste**: Open with `Super+Shift+V`, select an item, and press `Enter` to paste directly into your active window!
 - 🔍 **Search**: Filter text items as you type
 - 💾 **Persistent Storage**: Keeps history across sessions
 - 🖼️ **Image Management**: Automatically saves and manages clipboard images
 - 🎨 **Native Look**: Compact popup that follows the GNOME Shell theme and accent color, with optional Light, Dark and Darker themes
-- ⌨️ **Keyboard Navigation**: Full keyboard control (arrow keys, Enter, Delete, Esc)
+- ⌨️ **Keyboard Navigation**: Full keyboard control (arrow keys, Enter to paste, Delete, Esc)
 - 🖱️ **Item Actions**: Bookmark and delete buttons appear when hovering an item
 - 📌 **Bookmarks**: Pin items permanently outside the history limit
 - 🔒 **Private mode**: Pause history recording while you copy sensitive data
 
 ## Installation
 
-### From GNOME Extensions
-
-Install it from [extensions.gnome.org](https://extensions.gnome.org/extension/8891/gclip/).
-
 ### From Source
 
-1. Clone this repository:
+1. Clone this repository into your GNOME extensions directory:
    ```bash
    cd ~/.local/share/gnome-shell/extensions/
-   git clone https://github.com/Geomoon/gclip.git gclip@Geomoon.dev
+   git clone https://github.com/abhiwizardbyte/gclip.git gclip-enhanced@abhiwizardbyte.dev
    ```
 
 2. Compile the GSettings schema:
    ```bash
-   cd gclip@Geomoon.dev
+   cd gclip-enhanced@abhiwizardbyte.dev
    glib-compile-schemas schemas/
    ```
 
@@ -44,7 +39,7 @@ Install it from [extensions.gnome.org](https://extensions.gnome.org/extension/88
 
 4. Enable the extension:
    ```bash
-   gnome-extensions enable gclip@Geomoon.dev
+   gnome-extensions enable gclip-enhanced@abhiwizardbyte.dev
    ```
 
 ## Usage
